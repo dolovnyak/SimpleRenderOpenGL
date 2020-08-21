@@ -39,6 +39,19 @@ int main()
 	glViewport(0, 0, width, height);
 	glClearColor(0.8f, 0.3f, 0.3f, 1.0f);
 
+	GLfloat vertices[] = {
+			-0.5f, -0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			0.0f,  0.5f, 0.0f
+	};
+	GLuint VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	GLuint vertexShader;
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
 	while(!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
