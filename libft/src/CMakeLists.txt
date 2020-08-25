@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.17)
+set(CMAKE_C_STANDARD 99)
+
+add_subdirectory(ft_ch)
+add_subdirectory(ft_lst)
+add_subdirectory(ft_mem)
+add_subdirectory(ft_num)
+add_subdirectory(ft_printf)
+add_subdirectory(ft_put)
+add_subdirectory(ft_str)
+add_subdirectory(ft_swap)
+add_subdirectory(ft_read)
+add_subdirectory(ft_system)
