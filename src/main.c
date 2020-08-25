@@ -44,7 +44,7 @@ int main()
 
 	GLuint shaderProgram = create_shader_program(
 			(const char *[]){"../shaders/vertex.glsl", "../shaders/fragment.glsl", NULL},
-			(const GLuint[]){GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, NULL});
+			(const GLuint[]){GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, 0});
 
 	GLfloat vertices[] = {
 			0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // Нижний правый угол
