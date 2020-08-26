@@ -47,9 +47,15 @@ int main()
 			(const GLuint[]){GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, 0});
 
 	GLfloat vertices[] = {
-			0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // Нижний правый угол
-			-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // Нижний левый угол
-			0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // Верхний угол
+			0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,        // Нижний правый угол
+			-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,       // Нижний левый угол
+			0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.5f, 1.0f        // Верхний угол
+	};
+
+	GLfloat texCoords[] = {
+			0.0f, 0.0f,  // Нижний левый угол
+			1.0f, 0.0f,  // Нижний правый угол
+			0.5f, 1.0f   // Верхняя центральная сторона
 	};
 
 	GLuint VAO;
@@ -69,6 +75,15 @@ int main()
 
 	glBindVertexArray(0);
 
+	t_texture raw_texture = load_bmp("../resources/chaton.bmp");
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, raw_texture.width, raw_texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, raw_texture.image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	glUseProgram(shaderProgram);
 	while(!glfwWindowShouldClose(window))
 	{
@@ -80,9 +95,12 @@ int main()
 
 //		GLfloat timeValue = glfwGetTime();
 //		GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
-//		GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-//		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+//		GLfloat redValue = (sin(timeValue + 100) / 2) + 0.5;
+//		GLfloat blueValue = (sin(timeValue + 200) / 2) + 0.5;
+//		GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "coefs");
+//		glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
 
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
