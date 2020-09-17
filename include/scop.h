@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "libft.h"
+#include "matrix_vector_math.h"
 
 typedef struct	s_texture
 {

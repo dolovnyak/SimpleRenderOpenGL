@@ -5,3 +5,5 @@ target_sources(${PROJECT_NAME} PUBLIC
         create_shader_program.c
         load_bmp.c
         )
+
+add_subdirectory(matrix_vector_math)

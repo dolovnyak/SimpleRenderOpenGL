@@ -5,7 +5,7 @@ in vec2 Texture_coord;
 
 out vec4 color;
 
-//uniform vec4 coefs;
+uniform vec4 coefs;
 uniform sampler2D ourTexture;
 
 void main()
