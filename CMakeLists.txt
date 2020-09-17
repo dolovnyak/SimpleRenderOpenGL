@@ -5,7 +5,7 @@ project(scop C)
 add_executable(${PROJECT_NAME})
 
 # add GLWF
-add_subdirectory(Libglfw)
+add_subdirectory(libs/libglfw)
 include_directories(${GLFW_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} glfw)
 
@@ -15,16 +15,16 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
 
 # add GLEW
-add_subdirectory(Libglew)
+add_subdirectory(libs/libglew)
 include_directories(${GLEW_INCLUDE_DIRS})
 add_definitions(-DGLEW_STATIC)
 target_link_libraries(${PROJECT_NAME} libglew_static)
 
 # add libft
-add_subdirectory(libft)
+add_subdirectory(libs/libft)
 include_directories(${LIBFT_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ft)
 
 # project sources
-add_subdirectory(src)
-include_directories(${PROJECT_SOURCE_DIR}/include)
+add_subdirectory(srcs)
+include_directories(${PROJECT_SOURCE_DIR}/includes)
