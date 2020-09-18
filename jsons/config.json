@@ -1,0 +1,29 @@
+{
+  "window":
+  {
+    "title": "OpenGL simple render",
+    "size":
+    {
+      "x": 1920,
+      "y": 1080
+    }
+  },
+  "scenes":
+  [
+    {
+      "camera":
+      {
+
+      },
+      "objects":
+      [
+        {
+          "vertex_shader_path": "./shaders/vertex.glsl",
+          "fragment_shader_path": "./shaders/fragment.glsl",
+          "model_path": "./models/cube.obj",
+          "material_path": "./resources/chaton.bmp"
+        }
+      ]
+    }
+  ]
+}

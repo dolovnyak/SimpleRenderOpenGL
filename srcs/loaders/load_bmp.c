@@ -1,7 +1,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include "bmpheader.h"
-#include "scop.h"
+#include "opengl_simple_render.h"
 
 t_bmpheader	read_and_check_bmpheader(FILE *file, const char *filename)
 {

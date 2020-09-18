@@ -1,58 +1,62 @@
 #include <math.h>
-#include "scop.h"
+#include "opengl_simple_render.h"
 
-typedef struct s_check
+void	key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
-	GLFWwindow *window;
-	int space_flag;
-}				t_check;
-
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
-{
-	// Когда пользователь нажимает ESC, мы устанавливаем свойство WindowShouldClose в true,
-	// и приложение после этого закроется
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
-//	if(key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-//		*space_flag = !(*space_flag);
 }
 
-int main()
+int		init_glfw(t_glsr_main *main, int w, int h, char *title)
 {
-	char cwd[500];
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		ft_printf("Current working dir: %s\n", cwd);
-
-	glfwInit();
+	glfwInitHint(GLFW_COCOA_CHDIR_RESOURCES, GLFW_FALSE);
+	if (glfwInit() == GLFW_FALSE)
+		ft_exit_with_error((const char *[]){"glfw init error", NULL}, -1);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-	GLFWwindow* window = glfwCreateWindow(1920, 1080, "LearnOpenGL", NULL, NULL);
-	if (window == NULL)
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	main->window = glfwCreateWindow(w, h, title,NULL, NULL);
+	if (main->window == NULL)
 	{
 		ft_printf("Failed to create GLFW window");
 		glfwTerminate();
 		return -1;
 	}
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(main->window);
+	return (1);
+}
 
+int		init_glew()
+{
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
-		ft_printf("Failed to initialize GLEW");
-		return -1;
+		ft_printf("glew init error\n");
+		return (-1);
 	}
+	return (1);
+}
 
+int main()
+{
+	t_raw_main	raw_main;
+	t_glsr_main	main;
+
+	if (pfg_parse_main(&raw_main, "./jsons/config.json") < 0)
+		return (-1);
+	if (init_glfw(&main, raw_main.win_w, raw_main.win_h, raw_main.win_title) < 0)
+		return (-1);
+	if (init_glew() < 0)
+		return (-1);
 
 	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
+	glfwGetFramebufferSize(main.window, &width, &height);
 	glViewport(0, 0, width, height);
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.f, 0.f, 0.f, 1.f);
 
 	GLuint shaderProgram = create_shader_program(
-			(const char *[]){"../shaders/vertex.glsl", "../shaders/fragment.glsl", NULL},
+			(const char *[]){"./shaders/vertex.glsl", "./shaders/fragment.glsl", NULL},
 			(const GLuint[]){GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, 0});
 
 	float vertices[] = {
@@ -99,12 +103,6 @@ int main()
 			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
-//	GLfloat texCoords[] = {
-//			0.0f, 0.0f,  // Нижний левый угол
-//			1.0f, 0.0f,  // Нижний правый угол
-//			0.5f, 1.0f   // Верхняя центральная сторона
-//	};
-
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	GLuint VBO;
@@ -132,7 +130,7 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	t_texture raw_texture = load_bmp("../resources/chaton.bmp");
+	t_texture raw_texture = load_bmp("./resources/chaton.bmp");
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, raw_texture.width, raw_texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, raw_texture.image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -175,27 +173,20 @@ int main()
 	float angle_z = 0.f;
 	glEnable(GL_DEPTH_TEST);
 	glUseProgram(shaderProgram);
-	while(!glfwWindowShouldClose(window))
+	while(!glfwWindowShouldClose(main.window))
 	{
 		glfwPollEvents();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glfwSetKeyCallback(window, key_callback);
-
-		GLfloat timeValue = glfwGetTime();
-		GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
-		GLfloat redValue = (sinf(timeValue + 100) / 2) + 0.5;
-		GLfloat blueValue = (sinf(timeValue + 200) / 2) + 0.5;
-		GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "coefs");
-		glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
+		glfwSetKeyCallback(main.window, key_callback);
 
 		t_mat4 trans = mvm_identity_m4x4();
-		if (glfwGetKey(window, GLFW_KEY_1))
+		if (glfwGetKey(main.window, GLFW_KEY_1))
 			angle_x += 0.7f;
-		if (glfwGetKey(window, GLFW_KEY_2))
+		if (glfwGetKey(main.window, GLFW_KEY_2))
 			angle_y += 0.7f;
-		if (glfwGetKey(window, GLFW_KEY_3))
+		if (glfwGetKey(main.window, GLFW_KEY_3))
 			angle_z += 0.7f;
 		trans = mvm_x_rotate(trans, angle_x);
 		trans = mvm_y_rotate(trans, angle_y);
@@ -203,7 +194,6 @@ int main()
 
 		GLint transformLocation = glGetUniformLocation(shaderProgram, "transform");
 		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (GLfloat*)&trans);
-
 
 		GLint viewLocation = glGetUniformLocation(shaderProgram, "view");
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (GLfloat*)&view);
@@ -222,11 +212,8 @@ int main()
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 		glBindVertexArray(0);
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
 
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(main.window);
 	}
 
 	ft_printf("Hello, World!\n");

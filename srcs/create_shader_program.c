@@ -1,4 +1,4 @@
-#include "scop.h"
+#include "opengl_simple_render.h"
 
 int		is_input_correct(const char **files, const GLuint *shader_types)
 {

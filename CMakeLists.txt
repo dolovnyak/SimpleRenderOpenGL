@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.17)
 set(CMAKE_C_STANDARD 99)
 
-project(scop C)
+project(glsr C)
 add_executable(${PROJECT_NAME})
+
+set_target_properties(${PROJECT_NAME}
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}"
+        )
 
 # add GLWF
 add_subdirectory(libs/libglfw)
