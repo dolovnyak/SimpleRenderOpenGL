@@ -25,6 +25,11 @@ add_subdirectory(libs/libft)
 include_directories(${LIBFT_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ft)
 
+# add libjtoc
+add_subdirectory(libs/libjtoc)
+include_directories(${LIBJTOC_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} jtoc)
+
 # project sources
 add_subdirectory(srcs)
 include_directories(${PROJECT_SOURCE_DIR}/includes)
