@@ -7,50 +7,59 @@
 #include "matrix_vector_math.h"
 #include "parse_json.h"
 
-typedef struct	s_texture
+#define GLSR_PERSPECTIVE 1
+#define GLSR_ORTHOGRAPHIC 2
+
+typedef struct		s_texture
 {
 	int				width;
 	int				height;
 	unsigned char	*image;
-}				t_texture;
+}					t_texture;
 
-typedef struct	s_camera
+typedef struct		s_camera
 {
-
-}				t_camera;
-
-typedef struct		s_raw_model
-{
-	unsigned int	vao;
-	unsigned int	vbo;
-	size_t			vertex_count;
-}					t_raw_model;
+	t_mat4			view;
+}					t_camera;
 
 typedef struct		s_render_model
 {
-	t_raw_model		raw_model;
+	GLuint			vao;
+	GLuint			vbo;
+	size_t			vertex_count;
+	GLuint			texture_id;
 }					t_render_model;
 
-typedef struct	s_object
+typedef struct		s_object
 {
 	t_render_model	render_model;
 	GLuint			shader_program_id;
-}				t_object;
+	t_mat4			transform;
+	t_mat4			world_model;
+}					t_object;
 
-typedef struct	s_scene
+typedef struct		s_scene
 {
-	t_object	*objects;
-	t_camera	camera;
-}				t_scene;
+	t_object		*objects;
+	int				objects_num;
+	t_object		*cur_obj;
+	t_camera		camera;
+	t_mat4			projection;
+	int				projection_type;
+}					t_scene;
 
-typedef struct	s_glsr_main
+typedef struct		s_glsr_main
 {
-	t_scene		*scenes;
-	GLFWwindow	*window;
-}				t_glsr_main;
+	t_scene			*scenes;
+	int				scenes_num;
+	GLFWwindow		*window;
+	int				frame_buffer_w;
+	int				frame_buffer_h;
+}					t_glsr_main;
 
-GLuint		create_shader_program(const char **files, const GLuint *shader_types);
-t_texture	load_bmp(const char *filename);
-
+GLuint				load_and_create_shader_program(const char **files, const GLuint *shader_types);
+t_texture			load_bmp(const char *filename);
+int					init(t_glsr_main *main, const char *config_path);
+int					create_object_from_raw(t_object *obj, t_raw_object *raw_obj);
 
 #endif

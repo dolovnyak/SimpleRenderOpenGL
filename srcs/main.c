@@ -1,151 +1,94 @@
 #include <math.h>
 #include "opengl_simple_render.h"
 
-void	key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
+void	render_object(t_object *obj, t_mat4 *view, t_mat4 *projection)
 {
-	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
+	GLuint	program_id;
+
+	program_id = obj->shader_program_id;
+	glUseProgram(program_id);
+	glUniformMatrix4fv(glGetUniformLocation(program_id, "transform"), 1, GL_FALSE,
+					(GLfloat*)&obj->transform);
+	glUniformMatrix4fv(glGetUniformLocation(program_id, "view"), 1, GL_FALSE,
+					(GLfloat*)view);
+	glUniformMatrix4fv(glGetUniformLocation(program_id, "projection"), 1, GL_FALSE,
+					(GLfloat*)projection);
+	glUniformMatrix4fv(glGetUniformLocation(program_id, "model"), 1, GL_FALSE,
+					(GLfloat*)&obj->world_model);
+	glBindTexture(GL_TEXTURE_2D, obj->render_model.texture_id);
+	glBindVertexArray(obj->render_model.vao);
+	glDrawArrays(GL_TRIANGLES, 0, obj->render_model.vertex_count);
+	glBindVertexArray(0);
 }
 
-int		init_glfw(t_glsr_main *main, int w, int h, char *title)
+void	render_scene(t_scene *scene)
 {
-	glfwInitHint(GLFW_COCOA_CHDIR_RESOURCES, GLFW_FALSE);
-	if (glfwInit() == GLFW_FALSE)
-		ft_exit_with_error((const char *[]){"glfw init error", NULL}, -1);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	main->window = glfwCreateWindow(w, h, title,NULL, NULL);
-	if (main->window == NULL)
+	t_object	*objs;
+	int			objs_num;
+
+	objs = scene->objects;
+	objs_num = scene->objects_num;
+	for (int i = 0; i < objs_num; i++)
 	{
-		ft_printf("Failed to create GLFW window");
-		glfwTerminate();
-		return -1;
+//		render_object(&(objs[i]), &scene->camera.view, &scene->projection);
+		t_mat4 view = mvm_identity_m4x4();
+		view = mvm_translate(view, (t_vec3){0.f, 0.f, -3.f});
+		render_object(&(objs[i]), &view, &scene->projection);
 	}
-	glfwMakeContextCurrent(main->window);
-	return (1);
 }
 
-int		init_glew()
+void	events_processing(t_scene *scene, GLFWwindow *win, int w, int h)
 {
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK)
+	glfwPollEvents();
+
+	if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(win, GL_TRUE);
+	if (glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS)
 	{
-		ft_printf("glew init error\n");
-		return (-1);
+		if (scene->projection_type == GLSR_PERSPECTIVE)
+		{
+			scene->projection_type = GLSR_ORTHOGRAPHIC;
+			scene->projection = mvm_identity_m4x4();
+		}
+		else
+		{
+			scene->projection_type = GLSR_PERSPECTIVE;
+			scene->projection = mvm_perspective(66.f, (float)w / (float)h, 0.1f, 100.f);
+		}
 	}
-	return (1);
+	if (glfwGetKey(win, GLFW_KEY_1) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (glfwGetKey(win, GLFW_KEY_2) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (glfwGetKey(win, GLFW_KEY_3) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+
+	static float angle_x = 0.f;
+	static float angle_y = 0.f;
+	static float angle_z = 0.f;
+	angle_x += 0.05f;
+	angle_y += 0.05f;
+	angle_z += 0.05f;
+
+	for (int i = 0; i < scene->objects_num; i++)
+	{
+		scene->objects[i].transform = mvm_identity_m4x4();
+		scene->objects[i].transform = mvm_x_rotate(scene->objects[i].transform, angle_x);
+		scene->objects[i].transform = mvm_y_rotate(scene->objects[i].transform, angle_y);
+		scene->objects[i].transform = mvm_z_rotate(scene->objects[i].transform, angle_z);
+	}
 }
 
 int main()
 {
-	t_raw_main	raw_main;
 	t_glsr_main	main;
 
-	if (pfg_parse_main(&raw_main, "./jsons/config.json") < 0)
-		return (-1);
-	if (init_glfw(&main, raw_main.win_w, raw_main.win_h, raw_main.win_title) < 0)
-		return (-1);
-	if (init_glew() < 0)
+	if (init(&main, "./jsons/config.json") == -1)
 		return (-1);
 
-	int width, height;
-	glfwGetFramebufferSize(main.window, &width, &height);
-	glViewport(0, 0, width, height);
-	glClearColor(0.f, 0.f, 0.f, 1.f);
-
-	GLuint shaderProgram = create_shader_program(
-			(const char *[]){"./shaders/vertex.glsl", "./shaders/fragment.glsl", NULL},
-			(const GLuint[]){GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, 0});
-
-	float vertices[] = {
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-			0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	};
-
-	GLuint VAO;
-	glGenVertexArrays(1, &VAO);
-	GLuint VBO;
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-	glBindVertexArray(0);
-
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// Set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	t_texture raw_texture = load_bmp("./resources/chaton.bmp");
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, raw_texture.width, raw_texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, raw_texture.image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-
-	t_mat4 m1 = mvm_identity_m4x4();
-	m1 = mvm_scale(m1, (t_vec3){3.f, 7.f, -2.f});
-	m1 = mvm_scale(m1, (t_vec3){-2.f, 4.f, 5.f});
-	m1 = mvm_x_rotate(m1, 60.f);
-	m1 = mvm_y_rotate(m1, 60.f);
-	m1 = mvm_z_rotate(m1, -60.f);
-	m1 = mvm_translate(m1, (t_vec3){13.f, -2.f, 0.25f});
+	glfwGetFramebufferSize(main.window, &main.frame_buffer_w, &main.frame_buffer_h);
+	glViewport(0, 0, main.frame_buffer_w, main.frame_buffer_h);
+	glClearColor(0.09f, 0.08f, 0.15f, 1.f);
 
 	t_mat4 model = mvm_identity_m4x4();
 	model = mvm_x_rotate(model, -70.f);
@@ -153,66 +96,13 @@ int main()
 	t_mat4 view = mvm_identity_m4x4();
 	view = mvm_translate(view, (t_vec3){0.f, 0.f, -3.f});
 
-	t_mat4 projection = mvm_perspective(66.f, (float) width / (float) height, 0.1f, 100.f);
-
-	t_vec3 cubePositions[] = {
-			(t_vec3){ 0.0f,  0.0f,  0.0f},
-			(t_vec3){ 2.0f,  5.0f, -15.0f},
-			(t_vec3){-1.5f, -2.2f, -2.5f},
-			(t_vec3){-3.8f, -2.0f, -12.3f},
-			(t_vec3){ 2.4f, -0.4f, -3.5f},
-			(t_vec3){-1.7f,  3.0f, -7.5f},
-			(t_vec3){ 1.3f, -2.0f, -2.5f},
-			(t_vec3){ 1.5f,  2.0f, -2.5f},
-			(t_vec3){ 1.5f,  0.2f, -1.5f},
-			(t_vec3){-1.3f,  1.0f, -1.5f}
-	};
-
-	float angle_x = 0.f;
-	float angle_y = 0.f;
-	float angle_z = 0.f;
+	main.scenes[0].projection = mvm_perspective(66.f, (float)main.frame_buffer_w / (float)main.frame_buffer_h, 0.1f, 100.f);
 	glEnable(GL_DEPTH_TEST);
-	glUseProgram(shaderProgram);
 	while(!glfwWindowShouldClose(main.window))
 	{
-		glfwPollEvents();
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glfwSetKeyCallback(main.window, key_callback);
-
-		t_mat4 trans = mvm_identity_m4x4();
-		if (glfwGetKey(main.window, GLFW_KEY_1))
-			angle_x += 0.7f;
-		if (glfwGetKey(main.window, GLFW_KEY_2))
-			angle_y += 0.7f;
-		if (glfwGetKey(main.window, GLFW_KEY_3))
-			angle_z += 0.7f;
-		trans = mvm_x_rotate(trans, angle_x);
-		trans = mvm_y_rotate(trans, angle_y);
-		trans = mvm_z_rotate(trans, angle_z);
-
-		GLint transformLocation = glGetUniformLocation(shaderProgram, "transform");
-		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (GLfloat*)&trans);
-
-		GLint viewLocation = glGetUniformLocation(shaderProgram, "view");
-		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (GLfloat*)&view);
-
-		GLint projectionLocation = glGetUniformLocation(shaderProgram, "projection");
-		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (GLfloat*)&projection);
-
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glBindVertexArray(VAO);
-		for(GLuint i = 0; i < 10; i++)
-		{
-			model = mvm_identity_m4x4();
-			model = mvm_translate(model, cubePositions[i]);
-			GLint modelLocation = glGetUniformLocation(shaderProgram, "model");
-			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (GLfloat*)&model);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
-		glBindVertexArray(0);
-
+		events_processing(&(main.scenes[0]), main.window, main.frame_buffer_w, main.frame_buffer_h);
+		render_scene(&(main.scenes[0]));
 		glfwSwapBuffers(main.window);
 	}
 

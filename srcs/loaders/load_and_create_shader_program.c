@@ -1,6 +1,6 @@
 #include "opengl_simple_render.h"
 
-int		is_input_correct(const char **files, const GLuint *shader_types)
+static int		is_input_correct(const char **files, const GLuint *shader_types)
 {
 	int	file_len;
 	int	shader_len;
@@ -16,7 +16,7 @@ int		is_input_correct(const char **files, const GLuint *shader_types)
 	return 1;
 }
 
-GLuint	create_shader(const char *filename, GLuint shader_type)
+static GLuint	create_shader(const char *filename, GLuint shader_type)
 {
 	GLint	success;
 	GLuint	shader;
@@ -40,7 +40,7 @@ GLuint	create_shader(const char *filename, GLuint shader_type)
 	return (shader);
 }
 
-GLuint	create_shader_program(const char **files, const GLuint *shader_types)
+GLuint			load_and_create_shader_program(const char **files, const GLuint *shader_types)
 {
 	GLchar	info_log[512];
 	GLuint	shader_program;
