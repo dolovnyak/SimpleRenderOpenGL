@@ -83,8 +83,8 @@ int main()
 {
 	t_glsr_main	main;
 
-	if (init(&main, "./jsons/config.json") == -1)
-		return (-1);
+	if (init(&main, "./jsons/config.json") < 0)
+		ft_log_error("FAILED INIT", -1);
 
 	glfwGetFramebufferSize(main.window, &main.frame_buffer_w, &main.frame_buffer_h);
 	glViewport(0, 0, main.frame_buffer_w, main.frame_buffer_h);

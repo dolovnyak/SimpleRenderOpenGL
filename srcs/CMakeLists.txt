@@ -4,6 +4,7 @@ target_sources(${PROJECT_NAME} PUBLIC
         create_object_from_raw.c
         init.c
         main.c
+        utilities.c
         )
 
 add_subdirectory(loaders)

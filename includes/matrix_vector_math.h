@@ -5,6 +5,12 @@
 #include "libft.h"
 #include <GL/glew.h>
 
+typedef struct	s_vec2
+{
+	float		x;
+	float		y;
+}				t_vec2;
+
 typedef struct	s_vec3
 {
 	float		x;

@@ -61,5 +61,12 @@ GLuint				load_and_create_shader_program(const char **files, const GLuint *shade
 t_texture			load_bmp(const char *filename);
 int					init(t_glsr_main *main, const char *config_path);
 int					create_object_from_raw(t_object *obj, t_raw_object *raw_obj);
+int					log_error(const char *p, int id);
+int					load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *normals);
+
+
+int		vector_get_vec3_by_index(t_vec3 *vec, t_vector vector, size_t index);
+int		vector_get_vec2_by_index(t_vec2 *vec, t_vector vector, size_t index);
+int		vector_get_unsigned_by_index(unsigned *value, t_vector vector, size_t index);
 
 #endif

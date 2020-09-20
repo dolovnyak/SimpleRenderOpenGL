@@ -17,6 +17,13 @@
 # include <string.h>
 # include <unistd.h>
 
+typedef struct		s_vector
+{
+	void			*elems_data;
+	size_t			elem_size;
+	size_t			size;
+}					t_vector;
+
 typedef struct		s_list
 {
 	void			*content;
@@ -129,5 +136,12 @@ void				ft_fswap(float *a, float *b);
 //ft_system
 //void				ft_exit_with_error(const char *error_str, int error_code);
 void				ft_exit_with_error(const char **error_strs, int error_code);
+int					ft_log_error(const char *error, int id);
+
+//ft_vector
+t_vector			ft_vector_create(size_t	elem_size);
+void				ft_vector_free(t_vector *vector);
+int					ft_vector_push_back(t_vector *vector, void *elem_data);
+
 
 #endif

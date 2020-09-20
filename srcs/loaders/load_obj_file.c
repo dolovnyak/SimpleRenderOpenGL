@@ -1,136 +1,168 @@
 #include "opengl_simple_render.h"
 
-int		ft_isblank(char c)
+
+int		load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *normals)
 {
-	return ((c == ' ' || c == '\n' || c == '\v' ||
-			 c == '\t' || c == '\r' || c == '\f'));
-}
+	int			fd;
+	char		*line;
+	int			ret;
+	t_vector	tmp_vertices;
+	t_vector	tmp_uvs;
+	t_vector	tmp_normals;
+	t_vector	vertex_indices;
+	t_vector	uv_indices;
+	t_vector	normal_indices;
 
-double	ft_atof(const char *str)
-{
-	int		sign;
-	double	i;
-	double	value;
-	int		exponent;
+	tmp_vertices = ft_vector_create(sizeof(t_vec3));
+	tmp_uvs = ft_vector_create(sizeof(t_vec2));
+	tmp_normals = ft_vector_create(sizeof(t_vec3));
 
-	i = 1;
-	sign = 0;
-	value = 0;
-	while (ft_isblank(*str))
-		str++;
-	*str == '-' ? sign = 1 : 0;
-	*str == '-' || *str == '+' ? str++ : 0;
-	while ('0' <= *str && *str <= '9')
-		value = value * 10 + (*str++ - '0');
-	if (*str == '.' && (str++))
-		while ('0' <= *str && *str <= '9')
-			value += (*str++ - '0') / (i *= 10);
-	if (*str == 'E' && (str++))
-	{
-		exponent = ft_atoi(str);
-		if (exponent != 0)
-			value = value * pow(10, exponent);
-	}
-	return (sign == 1 && value > 0 ? -value : value);
-}
+	vertex_indices = ft_vector_create(sizeof(unsigned));
+	uv_indices = ft_vector_create(sizeof(unsigned));
+	normal_indices = ft_vector_create(sizeof(unsigned));
 
-void	get_numbers(char *path, int *vertices_num, int *normals_num, int *uvs_num)
-{
-	int		fd;
-	char	*line;
-
-	*vertices_num = 0;
-	*normals_num = 0;
-	*uvs_num = 0;
 	if ((fd = open(path, O_RDONLY)) == -1)
-		ft_exit_with_error(
-				(const char *[]){"obj file", path,"doesn't correct", NULL}, -1);
-	while (ft_read_line(fd, &line) > 0)
+		return (ft_log_error("FAILED OPEN OBJ FILE", -1));
+
+	while ((ret = ft_read_line(fd, &line)) > 0)
 	{
+		if (ft_strlen(line) < 5)
+			continue;
 		if (line[0] == 'v' && line[1] == ' ')
-			(*vertices_num)++;
-		else if (line[0] == 'v' && line[1] == 'n' && line[2] == ' ')
-			(*normals_num)++;
+		{
+			t_vec3 vertex;
+			if (sscanf(line + 2, "%f %f %f", &(vertex.x), &(vertex.y), &(vertex.z)) != 3)
+				return (ft_log_error("FAILED PARSE VERTEX IN OBJ FILE", -1));
+			ft_vector_push_back(&tmp_vertices, &vertex);
+		}
 		else if (line[0] == 'v' && line[1] == 't' && line[2] == ' ')
-			(*uvs_num)++;
+		{
+			t_vec2 uv;
+			if (sscanf(line + 3, "%f %f", &(uv.x), &(uv.y)) != 2)
+				return (ft_log_error("FAILED PARSE UV IN OBJ FILE", -1));
+			ft_vector_push_back(&tmp_uvs, &uv);
+		}
+		else if (line[0] == 'v' && line[1] == 'n' && line[2] == ' ')
+		{
+			t_vec3 normal;
+			if (sscanf(line + 3, "%f %f %f", &(normal.x), &(normal.y), &(normal.z)) != 3)
+				return (ft_log_error("FAILED PARSE NORMAL IN OBJ FILE", -1));
+			ft_vector_push_back(&tmp_normals, &normal);
+		}
+		else if (line[0] == 'f' && line[1] == ' ')
+		{
+			unsigned int vertex_index[4], uv_index[4], normal_index[4];
+			int matches = sscanf(line + 2, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d",
+								 &vertex_index[0], &uv_index[0], &normal_index[0],
+								 &vertex_index[1], &uv_index[1], &normal_index[1],
+								 &vertex_index[2], &uv_index[2], &normal_index[2],
+								 &vertex_index[3], &uv_index[3], &normal_index[3]);
+			if (matches == 9)
+			{
+				ft_vector_push_back(&vertex_indices, &(vertex_index[0]));
+				ft_vector_push_back(&vertex_indices, &(vertex_index[1]));
+				ft_vector_push_back(&vertex_indices, &(vertex_index[2]));
+				ft_vector_push_back(&uv_indices, &(uv_index[0]));
+				ft_vector_push_back(&uv_indices, &(uv_index[1]));
+				ft_vector_push_back(&uv_indices, &(uv_index[2]));
+				ft_vector_push_back(&normal_indices, &(normal_index[0]));
+				ft_vector_push_back(&normal_indices, &(normal_index[1]));
+				ft_vector_push_back(&normal_indices, &(normal_index[2]));
+			}
+			else if (matches == 12)
+			{
+				ft_vector_push_back(&vertex_indices, &(vertex_index[0]));
+				ft_vector_push_back(&vertex_indices, &(vertex_index[1]));
+				ft_vector_push_back(&vertex_indices, &(vertex_index[2]));
+				ft_vector_push_back(&uv_indices, &(uv_index[0]));
+				ft_vector_push_back(&uv_indices, &(uv_index[1]));
+				ft_vector_push_back(&uv_indices, &(uv_index[2]));
+				ft_vector_push_back(&normal_indices, &(normal_index[0]));
+				ft_vector_push_back(&normal_indices, &(normal_index[1]));
+				ft_vector_push_back(&normal_indices, &(normal_index[2]));
+
+				ft_vector_push_back(&vertex_indices, &(vertex_index[2]));
+				ft_vector_push_back(&vertex_indices, &(vertex_index[3]));
+				ft_vector_push_back(&vertex_indices, &(vertex_index[0]));
+				ft_vector_push_back(&uv_indices, &(uv_index[2]));
+				ft_vector_push_back(&uv_indices, &(uv_index[3]));
+				ft_vector_push_back(&uv_indices, &(uv_index[0]));
+				ft_vector_push_back(&normal_indices, &(normal_index[2]));
+				ft_vector_push_back(&normal_indices, &(normal_index[3]));
+				ft_vector_push_back(&normal_indices, &(normal_index[0]));
+			}
+			else
+			{
+				int matches = sscanf(line + 2, "%d %d %d %d",
+						 &vertex_index[0], &vertex_index[1], &vertex_index[2], &vertex_index[3]);
+				if (matches == 3)
+				{
+					ft_vector_push_back(&vertex_indices, &(vertex_index[0]));
+					ft_vector_push_back(&vertex_indices, &(vertex_index[1]));
+					ft_vector_push_back(&vertex_indices, &(vertex_index[2]));
+				}
+				else if (matches == 4)
+				{
+					ft_vector_push_back(&vertex_indices, &(vertex_index[0]));
+					ft_vector_push_back(&vertex_indices, &(vertex_index[1]));
+					ft_vector_push_back(&vertex_indices, &(vertex_index[2]));
+
+					ft_vector_push_back(&vertex_indices, &(vertex_index[2]));
+					ft_vector_push_back(&vertex_indices, &(vertex_index[3]));
+					ft_vector_push_back(&vertex_indices, &(vertex_index[0]));
+				}
+				else
+					return (ft_log_error("FAILED PARSE OBJ FILE", -1));
+			}
+		}
 		ft_strdel(&line);
 	}
+	if (ret < 0)
+		return (ft_log_error("FAILED READ OBJ FILE", -1));
+	ft_strdel(&line);
 	close(fd);
-}
+	if (vertex_indices.size == 0 || tmp_vertices.size == 0)
+		return (ft_log_error("FAILED PARSE OBJ FILE", -1));
 
-GLfloat	*append_vertices(GLfloat *array, char *line, int *length)
-{
-	int		i;
-	int		j;
-	char	**tab;
-	GLfloat	*new;
-
-	tab = ft_strsplit(&line[1], ' ');
-	*length += 6;
-	new = (GLfloat*)malloc(sizeof(GLfloat) * *length);
-	i = -1;
-	while (++i < *length - 6)
-		new[i] = array[i];
-	free(array);
-	array = new;
-	j = -1;
-	while (tab[++j] != NULL)
+	*vertices = ft_vector_create(sizeof(t_vec3));
+	*uvs = ft_vector_create(sizeof(t_vec2))
+	*normals = ft_vector_create(sizeof(t_vec3));
+	for (int i = 0; i < vertex_indices.size; i++)
 	{
-		array[*length - 6 + j] = (GLfloat)ft_atof(tab[j]);
-		array[*length - 3 + j] = j * 0.66f;
-		ft_strdel(&tab[j]);
+		unsigned vertex_index;
+		unsigned uv_index;
+		unsigned normal_index;
+		t_vec3 vertex;
+		t_vec2 uv;
+		t_vec3 normal;
+
+		if (!(vector_get_unsigned_by_index(&vertex_index, vertex_indices, i)))
+			return (ft_log_error("C VECTOR SIZES DON'T CORRECT", -1));
+		if (!(vector_get_vec3_by_index(&vertex, tmp_vertices, vertex_index - 1)))
+			return (ft_log_error("C VECTOR SIZES DON'T CORRECT", -1));
+		ft_vector_push_back(vertices, &vertex);
+
+		if (uv_indices.size > 0 && tmp_uvs.size > 0 && normal_indices.size > 0 && tmp_normals.size > 0)
+		{
+			if (!(vector_get_unsigned_by_index(&uv_index, uv_indices, i)))
+				return (ft_log_error("C VECTOR SIZES DON'T CORRECT", -1));
+			if (!(vector_get_vec2_by_index(&uv, tmp_uvs, uv_index - 1)))
+				return (ft_log_error("C VECTOR SIZES DON'T CORRECT", -1));
+
+			if (!(vector_get_unsigned_by_index(&normal_index, normal_indices, i)))
+				return (ft_log_error("C VECTOR SIZES DON'T CORRECT", -1));
+			if (!(vector_get_vec3_by_index(&normal, tmp_normals, vertex_index - 1)))
+				return (ft_log_error("C VECTOR SIZES DON'T CORRECT", -1));
+
+			ft_vector_push_back(uvs, &uv);
+			ft_vector_push_back(normals, &normal);
+		}
 	}
-	ft_strdel(&tab[j]);
-	free(tab);
-	tab = NULL;
-	return (array);
+	ft_vector_free(&tmp_vertices);
+	ft_vector_free(&tmp_uvs);
+	ft_vector_free(&tmp_normals);
+	ft_vector_free(&vertex_indices);
+	ft_vector_free(&uv_indices);
+	ft_vector_free(&normal_indices);
+	return (1);
 }
-
-
-
-//void	get_obj_file_data(char *path, GLfloat *vertices, GLfloat *normals, GLfloat *uvs)
-//{
-//	int		fd;
-//	char	*line;
-//
-//	while (ft_read_line(fd, &line) > 0)
-//	{
-//		if (line[0] == 'v' && line[1] == ' ')
-//			vertices = append_vertices(e->model.vertices, line, &v);
-//		else if (line[0] == 'v' && line[1] == 'n' && line[2] == ' ')
-//			normals = append_normals();
-//		else if (line[0] == 'v' && line[1] == 't' && line[2] == ' ')
-//			uvs = append_uvs();
-//		ft_strdel(&line);
-//	}
-//}
-
-//void	load_obj_file(char *path, GLfloat *final_vertices)
-//{
-//	int		fd;
-//	int		v;
-//	int		f;
-//	char	*line;
-//
-//	while (ft_read_line(fd, &line) > 0)
-//	{
-//		if (line[0] == 'v' && line[1] == ' ')
-//			final_vertices = append_vertices(final_vertices, line, &v);
-//		else if (line[0] == 'f' && line[1] == ' ')
-//			e->model.indices = append_indices(e->model.indices, line, &f);
-//		ft_strdel(&line);
-//	}
-
-
-//	int		vertices_num;
-//	int		normals_num;
-//	int		uvs_num;
-//	GLfloat *vertices;
-//	GLfloat *normals;
-//	GLfloat *uvs;
-//
-//	get_numbers(&vertices_num, &normals_num, &uvs_num);
-//	vertices = (GLfloat *)ft_memalloc(sizeof(GLfloat) * vertices_num);
-//	normals = (GLfloat *)ft_memalloc(sizeof(GLfloat) * normals_num);
-//	uvs = (GLfloat *)ft_memalloc(sizeof(GLfloat) * uvs_num);
-//}

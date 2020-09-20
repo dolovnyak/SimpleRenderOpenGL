@@ -20,11 +20,11 @@
         {
           "vertex_shader_path": "./shaders/vertex.glsl",
           "fragment_shader_path": "./shaders/fragment.glsl",
-          "model_path": "./models/cube.obj",
-          "material_path": "./resources/chaton.bmp",
+          "model_path": "./models/loot_box.obj",
+          "material_path": "./resources/default_diffuse.bmp",
           "position":
           {
-            "x": 1.0,
+            "x": -10.0,
             "y": 1.0,
             "z": -10.0
           }
@@ -32,37 +32,13 @@
         {
           "vertex_shader_path": "./shaders/vertex.glsl",
           "fragment_shader_path": "./shaders/fragment.glsl",
-          "model_path": "./models/cube.obj",
-          "material_path": "./resources/chaton.bmp",
+          "model_path": "./models/42.obj",
+          "material_path": "./resources/default_diffuse.bmp",
           "position":
           {
-            "x": -1.0,
+            "x": 10.0,
             "y": 1.0,
-            "z": -5.0
-          }
-        },
-        {
-          "vertex_shader_path": "./shaders/vertex.glsl",
-          "fragment_shader_path": "./shaders/fragment.glsl",
-          "model_path": "./models/cube.obj",
-          "material_path": "./resources/chaton.bmp",
-          "position":
-          {
-            "x": -1.0,
-            "y": 3.0,
-            "z": -5.0
-          }
-        },
-        {
-          "vertex_shader_path": "./shaders/vertex.glsl",
-          "fragment_shader_path": "./shaders/fragment.glsl",
-          "model_path": "./models/cube.obj",
-          "material_path": "./resources/chaton.bmp",
-          "position":
-          {
-            "x": 4.0,
-            "y": 3.0,
-            "z": -5.0
+            "z": -10.0
           }
         }
       ]

@@ -34,10 +34,9 @@ typedef struct		s_raw_main
 	int				scenes_num;
 }					t_raw_main;
 
-int			pfg_parse_main(t_raw_main *main, const char *path);
-int			pfg_parse_window(t_raw_main *main, t_jnode *win_node);
-int			pfg_parse_scenes(t_raw_main *main, t_jnode *scenes_node);
-int			pfg_parse_scene_objects(t_raw_scene *scene, t_jnode *objs_node);
-int			pfg_log_error(const char *p, int id);
-int			pfg_parse_vec3(t_vec3 *vec, t_jnode *n);
+int			pfj_parse_main(t_raw_main *main, const char *path);
+int			pfj_parse_window(t_raw_main *main, t_jnode *win_node);
+int			pfj_parse_scenes(t_raw_main *main, t_jnode *scenes_node);
+int			pfj_parse_scene_objects(t_raw_scene *scene, t_jnode *objs_node);
+int			pfj_parse_vec3(t_vec3 *vec, t_jnode *n);
 #endif
