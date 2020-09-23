@@ -40,25 +40,18 @@ void	render_scene(t_glsr_main *main, t_scene *scene)
 }
 
 
-int main()
+int main(int argc, char **argv)
 {
 	t_glsr_main	main;
 
+	if (argc != 2)
+		return (ft_log_error("input json file in argument", -1));
 	ft_bzero(&main, sizeof(t_glsr_main));
-//	if (init(&main, "./jsons/42.json") < 0)
-//	if (init(&main, "./jsons/aaa.json") < 0)
-	if (init(&main, "./jsons/teapot.json") < 0)
-//	if (init(&main, "./jsons/awp.json") < 0)
+	if (init(&main, argv[1]) < 0)
 	{
 		glfwTerminate();
 		return ft_log_error("FAILED INIT", -1);
 	}
-
-	glfwGetFramebufferSize(main.window, &main.frame_buffer_w, &main.frame_buffer_h);
-	glViewport(0, 0, main.frame_buffer_w, main.frame_buffer_h);
-	glClearColor(0.09f, 0.08f, 0.15f, 1.f);
-	main.scenes[0].projection = mvm_perspective(66.f, (float)main.frame_buffer_w / (float)main.frame_buffer_h, 0.1f, 1000.f);
-	glEnable(GL_DEPTH_TEST);
 	while(!glfwWindowShouldClose(main.window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -66,7 +59,6 @@ int main()
 		render_scene(&main, &(main.scenes[0]));
 		glfwSwapBuffers(main.window);
 	}
-	ft_printf("Hello, World!\n");
 	glfwDestroyWindow(main.window);
 	glfwTerminate();
 	return 0;

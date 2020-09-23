@@ -27,6 +27,14 @@ static int	init_glew()
 	return (1);
 }
 
+static void	configure_gl_and_get_framebuffer_size(t_glsr_main *main)
+{
+	glfwGetFramebufferSize(main->window, &main->frame_buffer_w, &main->frame_buffer_h);
+	glViewport(0, 0, main->frame_buffer_w, main->frame_buffer_h);
+	glClearColor(0.09f, 0.08f, 0.15f, 1.f);
+	glEnable(GL_DEPTH_TEST);
+}
+
 static int	init_scenes(t_glsr_main *main, t_raw_main *raw_main)
 {
 	if (!(main->scenes = (t_scene *)ft_memalloc(sizeof(t_scene) * raw_main->scenes_num)))
@@ -38,10 +46,11 @@ static int	init_scenes(t_glsr_main *main, t_raw_main *raw_main)
 			return (ft_log_error("FAILED MALLOC", -1));
 		main->scenes[i].objects_num = raw_main->scenes[i].objs_num;
 		for (int j = 0; j < main->scenes[i].objects_num; j++)
-		{
 			if (create_object_from_raw(&(main->scenes[i].objects[j]), &(raw_main->scenes[i].objs[j])) < 0)
 				return (ft_log_error("FAILED CREATE OBJECT", -1));
-		}
+		main->scenes[i].projection = mvm_perspective(
+				66.f, (float)main->frame_buffer_w / (float)main->frame_buffer_h, 0.1f, 1000.f);
+		main->scenes[i].projection_type = GLSR_PERSPECTIVE;
 	}
 	return (1);
 }
@@ -57,6 +66,7 @@ int			init(t_glsr_main *main, const char *config_path)
 		return (ft_log_error("FAILED GLFW", -1));
 	if (init_glew() < 0)
 		return (ft_log_error("FAILED GLEW", -1));
+	configure_gl_and_get_framebuffer_size(main);
 	if (init_scenes(main, &raw_main) < 0)
 		return (ft_log_error("FAILED INIT SCENES", -1));
 	return (1);
