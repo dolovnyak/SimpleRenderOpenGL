@@ -6,11 +6,9 @@
 #    By: sbednar <sbednar@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/07 16:14:32 by sbednar           #+#    #+#              #
-#    Updated: 2019/08/29 06:51:52 by rkeli            ###   ########.fr        #
+#    Updated: 2020/09/23 15:10:30 by sbecker          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
-include			../Makefile.inc
 
 NAME 		=	libjtoc.a
 
@@ -53,7 +51,6 @@ $(OBJ_DIR):
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) $(INCS) -o $@ -c $<
-	@echo "1" > ../$(TEMP)
 
 clean:
 	rm -rf $(OBJ_DIR)

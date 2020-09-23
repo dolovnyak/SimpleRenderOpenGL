@@ -1,5 +1,9 @@
 .idea
 .DS_Store
 cmake-build-debug
+objs/
+*.a
+libs/libft/obj/
+libs/libjtoc/obj/
 
 glsr
