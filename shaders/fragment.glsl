@@ -1,15 +1,24 @@
 #version 400 core
 
-in vec3 ourColor;
+smooth in vec4 smoothColor;
+flat in vec4 flatColor;
 in vec2 Texture_coord;
 
 out vec4 color;
 
-uniform vec4 coefs;
 uniform sampler2D ourTexture;
+uniform int colorFlag;
+uniform int flatFlag;
 
 void main()
 {
-//    color = vec4(ourColor * vec3(coefs), 1.0f);
-    color = texture(ourTexture, Texture_coord);
+    if (colorFlag == 1)
+    {
+        if (flatFlag == 1)
+            color = flatColor;
+        else
+            color = smoothColor;
+    }
+    else
+        color = texture(ourTexture, Texture_coord);
 }

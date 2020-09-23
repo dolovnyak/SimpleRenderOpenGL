@@ -29,12 +29,12 @@ static int	init_glew()
 
 static int	init_scenes(t_glsr_main *main, t_raw_main *raw_main)
 {
-	if (!(main->scenes = (t_scene *)malloc(sizeof(t_scene) * raw_main->scenes_num)))
+	if (!(main->scenes = (t_scene *)ft_memalloc(sizeof(t_scene) * raw_main->scenes_num)))
 		return (ft_log_error("FAILED MALLOC", -1));
 	main->scenes_num = raw_main->scenes_num;
 	for (int i = 0; i < raw_main->scenes_num; i++)
 	{
-		if (!(main->scenes[i].objects = (t_object *)malloc(sizeof(t_object) * raw_main->scenes[i].objs_num)))
+		if (!(main->scenes[i].objects = (t_object *)ft_memalloc(sizeof(t_object) * raw_main->scenes[i].objs_num)))
 			return (ft_log_error("FAILED MALLOC", -1));
 		main->scenes[i].objects_num = raw_main->scenes[i].objs_num;
 		for (int j = 0; j < main->scenes[i].objects_num; j++)
@@ -50,6 +50,7 @@ int			init(t_glsr_main *main, const char *config_path)
 {
 	t_raw_main	raw_main;
 
+	ft_bzero(&raw_main, sizeof(t_raw_main));
 	if (pfj_parse_main(&raw_main, config_path) < 0)
 		return (ft_log_error("FAILED PARSE JSON", -1));
 	if (init_glfw_and_window(main, raw_main.win_w, raw_main.win_h, raw_main.win_title) < 0)

@@ -18,6 +18,34 @@ static GLuint	get_material(char *material_path)
 	return texture_id;
 }
 
+static void	center_vertices(t_vector *vec_vertices)
+{
+	t_vec3		min;
+	t_vec3		max;
+	t_vec3		center;
+	t_vec3		*vertices;
+
+	vertices = (t_vec3 *)vec_vertices->elems_data;
+	min = vertices[0];
+	max = vertices[0];
+	for (int i = 1; i < vec_vertices->size; i++)
+	{
+		min.x = min.x > vertices[i].x ? vertices[i].x : min.x;
+		min.y = min.y > vertices[i].y ? vertices[i].y : min.y;
+		min.z = min.z > vertices[i].z ? vertices[i].z : min.z;
+		max.x = max.x < vertices[i].x ? vertices[i].x : max.x;
+		max.y = max.y < vertices[i].y ? vertices[i].y : max.y;
+		max.z = max.z < vertices[i].z ? vertices[i].z : max.z;
+	}
+	center = mvm_multiply_v3_f(mvm_add_v3_v3(min, max), 0.5f);
+	for (int i = 0; i < vec_vertices->size; i++)
+	{
+		vertices[i].x -= center.x;
+		vertices[i].y -= center.y;
+		vertices[i].z -= center.z;
+	}
+}
+
 static int	get_render_model(t_render_model *render_model, t_raw_object *obj)
 {
 	t_vector		vertices;
@@ -29,6 +57,7 @@ static int	get_render_model(t_render_model *render_model, t_raw_object *obj)
 	if (load_obj_file(obj->model_path, &vertices, &uvs, &normals) < 0)
 		return (ft_log_error("FAILURE LOAD OBJECT", -1));
 
+	center_vertices(&vertices);
 	if (uvs.size == 0 && normals.size == 0)
 	{
 		t_vector finish_vector = ft_vector_create(sizeof(float));
@@ -37,7 +66,8 @@ static int	get_render_model(t_render_model *render_model, t_raw_object *obj)
 		for (int i = 0; i < vertices.size; i++)
 		{
 			vector_get_vec3_by_index(&cur_vertex, vertices, i);
-//			vector_get_vec2_by_index(&cur_uv, uvs, i);
+			cur_uv.x = (0.5f + atan2f(cur_vertex.z, cur_vertex.x) / (float)M_PI * 0.5f) * 15.f;
+			cur_uv.y = (cur_vertex.y / 10.0f) * 20.f;
 			ft_vector_push_back(&finish_vector, &cur_vertex.x);
 			ft_vector_push_back(&finish_vector, &cur_vertex.y);
 			ft_vector_push_back(&finish_vector, &cur_vertex.z);

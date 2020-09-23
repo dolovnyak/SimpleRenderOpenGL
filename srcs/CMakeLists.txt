@@ -7,6 +7,7 @@ target_sources(${PROJECT_NAME} PUBLIC
         utilities.c
         )
 
+add_subdirectory(events_processing)
 add_subdirectory(loaders)
 add_subdirectory(matrix_vector_math)
 add_subdirectory(parse_from_json)

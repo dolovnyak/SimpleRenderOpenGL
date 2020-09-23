@@ -9,6 +9,10 @@
 
 #define GLSR_PERSPECTIVE 1
 #define GLSR_ORTHOGRAPHIC 2
+#define MAX_KEYS 348
+#define ANGLE_X_SPEED 0.5f
+#define ANGLE_Y_SPEED 0.5f
+#define ANGLE_Z_SPEED 0.5f
 
 typedef struct		s_texture
 {
@@ -42,7 +46,7 @@ typedef struct		s_scene
 {
 	t_object		*objects;
 	int				objects_num;
-	t_object		*cur_obj;
+	int 			cur_object_index;
 	t_camera		camera;
 	t_mat4			projection;
 	int				projection_type;
@@ -55,6 +59,9 @@ typedef struct		s_glsr_main
 	GLFWwindow		*window;
 	int				frame_buffer_w;
 	int				frame_buffer_h;
+	int				previous_keys_map[MAX_KEYS];
+	int				color_flag;
+	int				flat_flag;
 }					t_glsr_main;
 
 GLuint				load_and_create_shader_program(const char **files, const GLuint *shader_types);
@@ -63,6 +70,8 @@ int					init(t_glsr_main *main, const char *config_path);
 int					create_object_from_raw(t_object *obj, t_raw_object *raw_obj);
 int					log_error(const char *p, int id);
 int					load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *normals);
+void				events_processing(t_glsr_main *main, t_scene *scene, int w, int h);
+void				objects_events_processing(t_glsr_main *main, t_scene *scene);
 
 
 int		vector_get_vec3_by_index(t_vec3 *vec, t_vector vector, size_t index);
