@@ -85,7 +85,8 @@ void				ft_putendl_fd(char const *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
 
 //ft_read
-int					ft_read_line(const int fd, char **line);
+int					ft_multi_files_read_line(const int fd, char **line);
+int					ft_single_file_read_line(const int fd, char **line);
 int					ft_read_file(const char *filename, char **out_data);
 
 //ft_str

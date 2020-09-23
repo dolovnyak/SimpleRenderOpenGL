@@ -54,10 +54,10 @@ static t_list	*find_fd(t_list **f_elem, int fd)
 	return (tmp);
 }
 
-int				ft_read_line(const int fd, char **line)
+int				ft_single_file_read_line(const int fd, char **line)
 {
 	char			buf[BUFF_SIZE + 1];
-	static t_list	*first_elem;
+	static t_list	*first_elem = NULL;
 	t_list			*list;
 	int				exit;
 	size_t			read_size;
@@ -80,5 +80,10 @@ int				ft_read_line(const int fd, char **line)
 			return (1);
 		}
 		else
+		{
+			first_elem->content = NULL;
+			first_elem->content_size = 0;
+			first_elem->next = 0;
 			return ((*line = ft_strdup("")) ? 0 : -1);
+		}
 }

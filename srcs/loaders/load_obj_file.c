@@ -24,7 +24,7 @@ int		load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *norm
 	if ((fd = open(path, O_RDONLY)) == -1)
 		return (ft_log_error("FAILED OPEN OBJ FILE", -1));
 
-	while ((ret = ft_read_line(fd, &line)) > 0)
+	while ((ret = ft_single_file_read_line(fd, &line)) > 0)
 	{
 		if (ft_strlen(line) < 5)
 			continue;
@@ -125,7 +125,7 @@ int		load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *norm
 		return (ft_log_error("FAILED PARSE OBJ FILE", -1));
 
 	*vertices = ft_vector_create(sizeof(t_vec3));
-	*uvs = ft_vector_create(sizeof(t_vec2))
+	*uvs = ft_vector_create(sizeof(t_vec2));
 	*normals = ft_vector_create(sizeof(t_vec3));
 	for (int i = 0; i < vertex_indices.size; i++)
 	{
