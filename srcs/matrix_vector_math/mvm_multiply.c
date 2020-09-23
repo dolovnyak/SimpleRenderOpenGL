@@ -35,3 +35,12 @@ float	mvm_multiply_m1x4_v4(t_mat1x4 m, t_vec4 v)
 {
 	return m.a1 * v.x + m.a2 * v.y + m.a3 * v.z + m.a4 * v.w;
 }
+
+t_vec3	mvm_multiply_v3_f(t_vec3 vec, float n)
+{
+	vec.x *= n;
+	vec.y *= n;
+	vec.z *= n;
+
+	return vec;
+}

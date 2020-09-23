@@ -54,6 +54,9 @@ t_mat4			mvm_perspective(float fov_y, float aspect, float near_z, float far_z);
 
 t_mat4			mvm_multiply_m4_m4(t_mat4 m1, t_mat4 m2);
 float			mvm_multiply_m1x4_v4(t_mat1x4 m, t_vec4 v);
+t_vec3			mvm_multiply_v3_f(t_vec3 vec, float n);
+
+t_vec3			mvm_add_v3_v3(t_vec3 vec1, t_vec3 vec2);
 
 t_mat4			mvm_identity_m4x4();
 
