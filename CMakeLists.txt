@@ -10,9 +10,9 @@ set_target_properties(${PROJECT_NAME}
         )
 
 # add GLWF
-add_subdirectory(libs/libglfw)
-include_directories(${GLFW_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} glfw)
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 
 # add OpenGL
 find_package(OpenGL REQUIRED)

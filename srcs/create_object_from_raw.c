@@ -14,6 +14,7 @@ static GLuint	get_material(char *material_path)
 				 GL_RGB, GL_UNSIGNED_BYTE, raw_texture.image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	free(raw_texture.image);
 
 	return texture_id;
 }
@@ -52,6 +53,7 @@ static int	get_render_model(t_render_model *render_model, t_raw_object *obj)
 	t_vector		uvs;
 	t_vector		normals;
 	float			*finish_vertices_data;
+	t_vector finish_vector = ft_vector_create(sizeof(float));
 
 	render_model->texture_id = get_material(obj->material_path);
 	if (load_obj_file(obj->model_path, &vertices, &uvs, &normals) < 0)
@@ -60,7 +62,6 @@ static int	get_render_model(t_render_model *render_model, t_raw_object *obj)
 	center_vertices(&vertices);
 	if (uvs.size == 0 && normals.size == 0)
 	{
-		t_vector finish_vector = ft_vector_create(sizeof(float));
 		t_vec3	cur_vertex;
 		t_vec2	cur_uv;
 		for (int i = 0; i < vertices.size; i++)
@@ -93,7 +94,6 @@ static int	get_render_model(t_render_model *render_model, t_raw_object *obj)
 	}
 	else
 	{
-		t_vector finish_vector = ft_vector_create(sizeof(float));
 		t_vec3	cur_vertex;
 		t_vec2	cur_uv;
 		for (int i = 0; i < vertices.size; i++)
@@ -123,6 +123,10 @@ static int	get_render_model(t_render_model *render_model, t_raw_object *obj)
 		render_model->vbo = VBO;
 		render_model->vertex_count = vertices.size;
 	}
+	ft_vector_free(&finish_vector);
+	ft_vector_free(&vertices);
+	ft_vector_free(&uvs);
+	ft_vector_free(&normals);
 	return (1);
 }
 

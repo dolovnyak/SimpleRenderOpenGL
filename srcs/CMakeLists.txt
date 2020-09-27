@@ -5,9 +5,10 @@ target_sources(${PROJECT_NAME} PUBLIC
         init.c
         main.c
         utilities.c
+        events_processing.c
+        render_loop.c
         )
 
-add_subdirectory(events_processing)
 add_subdirectory(loaders)
 add_subdirectory(matrix_vector_math)
 add_subdirectory(parse_from_json)

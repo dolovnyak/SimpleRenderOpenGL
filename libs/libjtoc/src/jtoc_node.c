@@ -29,26 +29,6 @@ static int	str_hash(const char *str)
 	return (res);
 }
 
-static int	get_next_hash(char **str)
-{
-	char	*dup;
-	int		res;
-	char	c;
-
-	dup = *str;
-	while (*dup && *dup != '.')
-		++dup;
-	c = 0;
-	if (*dup)
-	{
-		c = *dup;
-		*dup = '\0';
-	}
-	res = str_hash(*str);
-	*str = c ? dup + 1 : dup;
-	return (res);
-}
-
 t_jnode		*jtoc_node_create(enum e_type type, char *name, void *data)
 {
 	t_jnode	*res;
@@ -79,30 +59,59 @@ void		jtoc_node_add_child(t_jnode *parent, t_jnode *child)
 	cur->right = child;
 }
 
-t_jnode		*jtoc_node_get_by_path(t_jnode *parent, const char *path)
+int	split_str_before_after_dot(const char *src, char **before_dot, char **after_dot)
 {
-	t_jnode	*cur;
-	char	*dupf;
-	char	*dup;
-	int		hash;
+	int	i;
+	int	len;
 
-	if (!path || !parent || !(dup = ft_strdup(path)))
-		return (NULL);
-	dupf = dup;
-	cur = parent;
-	while ((hash = get_next_hash(&dup)) != 0)
+	i = -1;
+	while (src[++i])
 	{
-		cur = cur->down;
-		while (cur && cur->hash != hash)
-			cur = cur->right;
-		if (!cur)
+		if (src[i] == '.')
 		{
-			cur = NULL;
-			break ;
+			*before_dot = (char *)ft_memalloc(sizeof(char) * (i + 1));
+			ft_strncpy(*before_dot, src, i);
+			len = ft_strlen(&src[++i]);
+			*after_dot = (char *)ft_memalloc(sizeof(char) * (len + 1));
+			ft_strncpy(*after_dot, &src[i], len);
+			return (1);
 		}
 	}
-	free(dupf);
-	return (cur);
+	return (0);
+}
+
+t_jnode	*jtoc_node_get_by_path(t_jnode *parent, const char *path)
+{
+	t_jnode	*cur;
+	char	*path_before_dot;
+	char	*path_after_dot;
+
+	if (!path || !(*path) || !parent)
+		return (NULL);
+	cur = parent->down;
+	if (!ft_strchr(path, '.'))
+		while (cur)
+		{
+			if (ft_strcmp(cur->name, path) == 0)
+				return cur;
+			cur = cur->right;
+		}
+	else
+	{
+		split_str_before_after_dot(path, &path_before_dot, &path_after_dot);
+		while (cur)
+		{
+			if (ft_strcmp(cur->name, path_before_dot) == 0)
+			{
+				free(path_before_dot);
+				cur = jtoc_node_get_by_path(cur, path_after_dot);
+				free(path_after_dot);
+				return (cur);
+			}
+			cur = cur->right;
+		}
+	}
+	return NULL;
 }
 
 void		jtoc_node_clear(t_jnode *cur)
