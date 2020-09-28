@@ -1,20 +1,26 @@
 #include "parse_json.h"
 
-int	pfj_parse_main(t_raw_main *main, const char *path)
+int	pfj_parse_main(t_raw_main *m, const char *path)
 {
-	t_jnode		*root;
-	t_jnode		*tmp;
+	char	*json;
+	cJSON	*root;
+	cJSON	*tmp;
 
-	if (!(root = jtoc_read(path)))
-		return (ft_log_error("READ JSON", -1));
-	if (!(tmp = jtoc_node_get_by_path(root, "window")) || tmp->type != object)
-		return (ft_log_error("MISSING WINDOW SECTION", -1));
-	if (pfj_parse_window(main, tmp) < 0)
+	if (ft_read_file(path, &json) < 0)
+		return (ft_log_error("JSON FILE DOESN'T CORRECT", -1));
+	if (!(root = cJSON_Parse(json)))
+	{
+		cJSON_Delete(root);
+		return (ft_log_error(cJSON_GetErrorPtr(), -1));
+	}
+	if (!(tmp = cJSON_GetObjectItemCaseSensitive(root, "window")) && !cJSON_IsObject(tmp))
+		return (ft_log_error("WINDOW SECTION", -1));
+	if (pfj_parse_window(m, tmp) < 0)
 		return (ft_log_error("PARSE WINDOW", -1));
-	if (!(tmp = jtoc_node_get_by_path(root, "scenes")) || tmp->type != array)
-		return (ft_log_error("MISSING SCENES SECTION", -1));
-	if (pfj_parse_scenes(main, tmp) < 0)
-		return (ft_log_error("PARSING SCENES", -1));
-	jtoc_node_clear(root);
+	if (!(tmp = cJSON_GetObjectItemCaseSensitive(root, "scenes")) && !cJSON_IsArray(tmp))
+		return (ft_log_error("SCENES SECTION", -1));
+	if (pfj_parse_scenes(m, tmp) < 0)
+		return (ft_log_error("PARSING SCENE", -1));
+	cJSON_Delete(root);
 	return (1);
 }

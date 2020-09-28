@@ -1,7 +1,7 @@
 #ifndef PARSE_JSON_H
 #define PARSE_JSON_H
 
-#include "libjtoc.h"
+#include "cJSON.h"
 #include "matrix_vector_math.h"
 
 typedef struct		s_raw_camera
@@ -34,9 +34,9 @@ typedef struct		s_raw_main
 	int				scenes_num;
 }					t_raw_main;
 
-int			pfj_parse_main(t_raw_main *main, const char *path);
-int			pfj_parse_window(t_raw_main *main, t_jnode *win_node);
-int			pfj_parse_scenes(t_raw_main *main, t_jnode *scenes_node);
-int			pfj_parse_scene_objects(t_raw_scene *scene, t_jnode *objs_node);
-int			pfj_parse_vec3(t_vec3 *vec, t_jnode *n);
+int			pfj_parse_main(t_raw_main *m, const char *path);
+int			pfj_parse_window(t_raw_main *m, cJSON *win_n);
+int			pfj_parse_scenes(t_raw_main *m, cJSON *scenes_n);
+int			pfj_parse_scene_objects(t_raw_scene *scene, cJSON *objs_n);
+int			pfj_parse_vec3(t_vec3 *vec, cJSON *vec_n);
 #endif

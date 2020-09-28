@@ -1,17 +1,20 @@
 #include "parse_json.h"
 
-int	pfj_parse_window(t_raw_main *main, t_jnode *win_node)
+int	pfj_parse_window(t_raw_main *m, struct cJSON *win_n)
 {
-	t_jnode	*tmp;
+	cJSON	*tmp;
+	cJSON	*size_n;
 
-	if (!(tmp = jtoc_node_get_by_path(win_node, "title")) || tmp->type != string)
-		return (ft_log_error("MISSING WIN TITLE", -1));
-	main->win_title = ft_strdup(jtoc_get_string(tmp));
-	if (!(tmp = jtoc_node_get_by_path(win_node, "size.x")) || tmp->type != integer)
+	if (!(tmp = cJSON_GetObjectItemCaseSensitive(win_n, "title")) || !cJSON_IsString(tmp))
+		return (ft_log_error("WIN TITLE ERROR", -1));
+	m->win_title = ft_strdup(tmp->valuestring);
+	if (!(size_n = cJSON_GetObjectItemCaseSensitive(win_n, "size")) || !cJSON_IsObject(size_n))
+		return (ft_log_error("WINDOW SIZE ERROR", -1));
+	if (!(tmp = cJSON_GetObjectItemCaseSensitive(size_n, "x")) || !cJSON_IsNumber(tmp))
 		return (ft_log_error("WINDOW SIZE.X ERROR", -1));
-	main->win_w = jtoc_get_int(tmp);
-	if (!(tmp = jtoc_node_get_by_path(win_node, "size.y")) || tmp->type != integer)
+	m->win_w = tmp->valueint;
+	if (!(tmp = cJSON_GetObjectItemCaseSensitive(size_n, "y")) || !cJSON_IsNumber(tmp))
 		return (ft_log_error("WINDOW SIZE.Y ERROR", -1));
-	main->win_h = jtoc_get_int(tmp);
+	m->win_h = tmp->valueint;
 	return (1);
 }

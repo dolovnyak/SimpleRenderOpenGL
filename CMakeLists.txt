@@ -9,7 +9,7 @@ set_target_properties(${PROJECT_NAME}
         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}"
         )
 
-# add GLWF
+# add SDL2
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
@@ -30,10 +30,10 @@ add_subdirectory(libs/libft)
 include_directories(${LIBFT_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ft)
 
-# add libjtoc
-add_subdirectory(libs/libjtoc)
-include_directories(${LIBJTOC_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} jtoc)
+# add cJSON
+add_subdirectory(libs/cJSON)
+include_directories(libs/cJSON)
+target_link_libraries(${PROJECT_NAME} cjson)
 
 # project sources
 add_subdirectory(srcs)

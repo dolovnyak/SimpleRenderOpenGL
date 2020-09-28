@@ -1,6 +1,5 @@
 #include "opengl_simple_render.h"
 
-
 int		load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *normals)
 {
 	int			fd;
@@ -127,7 +126,7 @@ int		load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *norm
 	*vertices = ft_vector_create(sizeof(t_vec3));
 	*uvs = ft_vector_create(sizeof(t_vec2));
 	*normals = ft_vector_create(sizeof(t_vec3));
-	for (int i = 0; i < vertex_indices.size; i++)
+	for (size_t i = 0; i < vertex_indices.size; i++)
 	{
 		unsigned vertex_index;
 		unsigned uv_index;

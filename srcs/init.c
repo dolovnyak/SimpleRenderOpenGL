@@ -27,7 +27,7 @@ static int	init_scenes(t_glsr_main *main, t_raw_main *raw_main)
 			if (create_object_from_raw(&(main->scenes[i].objects[j]), &(raw_main->scenes[i].objs[j])) < 0)
 				return (ft_log_error("FAILED CREATE OBJECT", -1));
 		main->scenes[i].projection = mvm_perspective(
-				66.f, (float)main->win_w / (float)main->win_h, 0.1f, 1000.f);
+				66.f, (float)main->win_w / (float)main->win_h, 0.1f, 100.f);
 		main->scenes[i].projection_type = GLSR_PERSPECTIVE;
 	}
 	return (1);
@@ -58,24 +58,23 @@ int			init_sdl(t_glsr_main *main, t_raw_main *raw_main)
 {
 	int error;
 
-	error = SDL_Init(SDL_INIT_EVERYTHING);
+	error = SDL_Init(SDL_INIT_VIDEO);
 	if (error < 0)
 		return (ft_log_error("failed sdl init", -1));
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, SDL_TRUE);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
+	SDL_GL_SetSwapInterval(1);
 	main->window = SDL_CreateWindow(raw_main->win_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-							raw_main->win_w, raw_main->win_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+							raw_main->win_w, raw_main->win_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
 	if (main->window == NULL)
 		return (ft_log_error("failed init window", -1));
 	main->cur_keys_map = SDL_GetKeyboardState(NULL);
 	SDL_GetWindowSize(main->window, &main->win_w, &main->win_h);
 	SDL_GL_CreateContext(main->window);
 	return (1);
-//	SDL_GL_SetSwapInterval(1);
-
-//	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, SDL_TRUE);
-//	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 }
 
 int			init(t_glsr_main *main, const char *config_path)

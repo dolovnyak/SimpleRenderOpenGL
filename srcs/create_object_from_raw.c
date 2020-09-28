@@ -29,7 +29,7 @@ static void	center_vertices(t_vector *vec_vertices)
 	vertices = (t_vec3 *)vec_vertices->elems_data;
 	min = vertices[0];
 	max = vertices[0];
-	for (int i = 1; i < vec_vertices->size; i++)
+	for (size_t i = 1; i < vec_vertices->size; i++)
 	{
 		min.x = min.x > vertices[i].x ? vertices[i].x : min.x;
 		min.y = min.y > vertices[i].y ? vertices[i].y : min.y;
@@ -39,7 +39,7 @@ static void	center_vertices(t_vector *vec_vertices)
 		max.z = max.z < vertices[i].z ? vertices[i].z : max.z;
 	}
 	center = mvm_multiply_v3_f(mvm_add_v3_v3(min, max), 0.5f);
-	for (int i = 0; i < vec_vertices->size; i++)
+	for (size_t i = 0; i < vec_vertices->size; i++)
 	{
 		vertices[i].x -= center.x;
 		vertices[i].y -= center.y;
@@ -64,7 +64,7 @@ static int	get_render_model(t_render_model *render_model, t_raw_object *obj)
 	{
 		t_vec3	cur_vertex;
 		t_vec2	cur_uv;
-		for (int i = 0; i < vertices.size; i++)
+		for (size_t i = 0; i < vertices.size; i++)
 		{
 			vector_get_vec3_by_index(&cur_vertex, vertices, i);
 			cur_uv.x = (0.5f + atan2f(cur_vertex.z, cur_vertex.x) / (float)M_PI * 0.5f) * 15.f;
@@ -96,7 +96,7 @@ static int	get_render_model(t_render_model *render_model, t_raw_object *obj)
 	{
 		t_vec3	cur_vertex;
 		t_vec2	cur_uv;
-		for (int i = 0; i < vertices.size; i++)
+		for (size_t i = 0; i < vertices.size; i++)
 		{
 			vector_get_vec3_by_index(&cur_vertex, vertices, i);
 			vector_get_vec2_by_index(&cur_uv, uvs, i);

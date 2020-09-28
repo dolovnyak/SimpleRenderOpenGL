@@ -50,7 +50,7 @@ void	render_loop(t_glsr_main *m)
 				m->params |= QUIT_PROGRAM;
 		events_processing(m);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, m->win_w, m->win_h);
+		glViewport(0, 0, m->win_w * 2, m->win_h * 2);
 		render_scene(m, &(m->scenes[0]));
 		glUseProgram(0);
 		glBindVertexArray(0);

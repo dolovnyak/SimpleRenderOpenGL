@@ -52,18 +52,8 @@ void	objects_events_processing(t_glsr_main *m, t_scene *scene)
 	rotate_object(m, &scene->objects[scene->cur_object_index]);
 }
 
-static void	render_flags_processing(t_glsr_main *m, t_scene *scene)
+static void	render_flags_processing(t_glsr_main *m)
 {
-//	if (glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS)
-//	{
-//		scene->projection_type = GLSR_PERSPECTIVE;
-//		scene->projection = mvm_perspective(66.f, (float)w / (float)h, 0.1f, 1000.f);
-//	}
-//	else if (glfwGetKey(win, GLFW_KEY_O))
-//	{
-//		scene->projection_type = GLSR_ORTHOGRAPHIC;
-//		scene->projection = mvm_identity_m4x4();
-//	}
 	if (m->cur_keys_map[SDL_SCANCODE_1])
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if (m->cur_keys_map[SDL_SCANCODE_2])
@@ -78,7 +68,7 @@ static void	render_flags_processing(t_glsr_main *m, t_scene *scene)
 
 void	events_processing(t_glsr_main *m)
 {
-	render_flags_processing(m, &m->scenes[0]);
+	render_flags_processing(m);
 	objects_events_processing(m, &m->scenes[0]);
 	for (int i = 0; i < SDL_NUM_SCANCODES; i++)
 		m->previous_keys_map[i] = m->cur_keys_map[i];

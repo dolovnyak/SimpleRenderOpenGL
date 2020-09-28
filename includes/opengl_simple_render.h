@@ -10,7 +10,9 @@
 
 #define GLSR_PERSPECTIVE 1
 #define GLSR_ORTHOGRAPHIC 2
+
 #define	QUIT_PROGRAM (1 << 0)
+
 #define ANGLE_X_SPEED 1.0f
 #define ANGLE_Y_SPEED 0.5f
 #define ANGLE_Z_SPEED 0.5f
