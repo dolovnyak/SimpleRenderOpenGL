@@ -62,9 +62,6 @@ SDL_LNK			:=		-L ~/.brew/lib -lsdl2
 
 FRAMEWORKS		:=		-framework OpenGL -framework AppKit
 
-$(info $$GLEW_LIB is [${GLEW_LIB}])
-$(info $$CJSON_LNK is [${CJSON_LNK}])
-
 all:			dirs $(NAME)
 
 $(NAME):		$(FT_LIB) $(GLEW_LIB) $(OBJ_DIR) $(INCS) $(FT_INC) $(GLEW_INCt ) $(OBJS)
