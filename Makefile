@@ -48,14 +48,13 @@ FT_LIB			:=		$(addprefix $(FT),libft.a)
 FT_INC			:=		-I ./libs/libft/include
 FT_LNK			:=		-L ./libs/libft -l ft
 
-CJSON			:=		~/.brew/lib
-CJSON_INC		:=		-I ~/.brew/include/cjson/
-CJSON_LNK		:=		-L ~/.brew -l cjson
+CJSON			:=		./libs/cjson
+CJSON_INC		:=		-I $(CJSON)
+CJSON_LNK		:=		-L $(CJSON)/lib -lcjson
 
-GLEW			:=		./libs/libglew/
-GLEW_LIB		:=		$(addprefix $(GLEW)lib/,libGLEW.a)
-GLEW_INC		:=		-I ./libs/libglew/include
-GLEW_LNK		:=		-L ./libs/libglew/lib -l glew
+GLEW			:=		./libs/libglew
+GLEW_INC		:=		-I $(GLEW)/include
+GLEW_LNK		:=		-L $(GLEW)/lib -lGLEW
 
 SDL_INC			:=		-I ~/.brew/include/SDL2/
 SDL_LNK			:=		-L ~/.brew/lib -lsdl2
@@ -64,7 +63,7 @@ FRAMEWORKS		:=		-framework OpenGL -framework AppKit
 
 all:			dirs $(NAME)
 
-$(NAME):		$(FT_LIB) $(GLEW_LIB) $(OBJ_DIR) $(INCS) $(FT_INC) $(GLEW_INCt ) $(OBJS)
+$(NAME):		$(FT_LIB) $(OBJ_DIR) $(INCS) $(OBJS)
 				$(CC) $(CFLAGS) $(FT_LNK) $(CJSON_LNK) $(SDL_LNK) $(GLEW_LNK) $(FRAMEWORKS) $(OBJS) -o $(NAME)
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
@@ -73,16 +72,10 @@ $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
 $(FT_LIB):
 				make -C $(FT)
 
-$(GLEW_LIB):
-				make -C $(GLEW)
-
-dirs:			$(OBJ_DIR) $(JC_OBJ_DIR) $(MVM_OBJ_DIR) $(PFJ_OBJ_DIR) $(LOAD_OBJ_DIR) $(EVENTS_OBJ_DIR)
+dirs:			$(OBJ_DIR) $(MVM_OBJ_DIR) $(PFJ_OBJ_DIR) $(LOAD_OBJ_DIR) $(EVENTS_OBJ_DIR)
 
 $(OBJ_DIR):
 				mkdir -p $(OBJ_DIR)
-
-$(JC_OBJ_DIR):
-				mkdir -p $(JC_OBJ_DIR)
 
 $(MVM_OBJ_DIR):
 				mkdir -p $(MVM_OBJ_DIR)
@@ -105,4 +98,3 @@ fclean: 		clean
 				make -C $(FT) fclean
 
 re: 			fclean all
-
