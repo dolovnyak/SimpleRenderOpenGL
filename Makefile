@@ -46,18 +46,18 @@ INCS			:=		$(INC_DIR)/bmpheader.h \
 FT				:=		./libs/libft/
 FT_LIB			:=		$(addprefix $(FT),libft.a)
 FT_INC			:=		-I ./libs/libft/include
-FT_LNK			:=		-L ./libs/libft -l ft
+FT_LNK			:=		-L ./libs/libft -lft
 
-CJSON			:=		./libs/cjson
-CJSON_INC		:=		-I $(CJSON)
-CJSON_LNK		:=		-L $(CJSON)/lib -lcjson
+CJSON_INC		:=		-I ~/.brew/include/cjson
+CJSON_LNK		:=		-L ~/.brew/lib -lcjson
 
 GLEW			:=		./libs/libglew
 GLEW_INC		:=		-I $(GLEW)/include
-GLEW_LNK		:=		-L $(GLEW)/lib -lGLEW
+GLEW_LNK		:=		-L $(GLEW)/lib/ -lGLEW
 
-SDL_INC			:=		-I ~/.brew/include/SDL2/
-SDL_LNK			:=		-L ~/.brew/lib -lsdl2
+SDL				:=		./libs/SDL2-2.0.12
+SDL_INC			:=		-I $(SDL)/include
+SDL_LNK			:=		-L $(SDL)/build/.libs -lsdl2
 
 FRAMEWORKS		:=		-framework OpenGL -framework AppKit
 
