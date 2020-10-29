@@ -44,7 +44,7 @@ INCS			:=		$(INC_DIR)/bmpheader.h \
 						$(INC_DIR)/parse_json.h
 
 FT				:=		./libs/libft/
-FT_LIB			:=		$(addprefix $(FT),libft.a)
+FT_TARGET		:=		$(addprefix $(FT),libft.a)
 FT_INC			:=		-I ./libs/libft/include
 FT_LNK			:=		-L ./libs/libft -lft
 
@@ -52,6 +52,7 @@ CJSON_INC		:=		-I ~/.brew/include/cjson
 CJSON_LNK		:=		-L ~/.brew/lib -lcjson
 
 GLEW			:=		./libs/libglew
+GLEW_TARGET		:=		$(GLEW)/include
 GLEW_INC		:=		-I $(GLEW)/include
 GLEW_LNK		:=		-L $(GLEW)/lib/ -lGLEW
 
@@ -63,14 +64,17 @@ FRAMEWORKS		:=		-framework OpenGL -framework AppKit
 
 all:			dirs $(NAME)
 
-$(NAME):		$(FT_LIB) $(OBJ_DIR) $(INCS) $(OBJS)
+$(NAME):		$(FT_TARGET) $(GLEW_TARGET) $(OBJ_DIR) $(INCS) $(OBJS)
 				$(CC) $(CFLAGS) $(FT_LNK) $(CJSON_LNK) $(SDL_LNK) $(GLEW_LNK) $(FRAMEWORKS) $(OBJS) -o $(NAME)
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
 				$(CC) $(CFLAGS) $(GLEW_INC) $(SDL_INC) -I $(INC_DIR) $(FT_INC) $(CJSON_INC) -o $@ -c $<
 
-$(FT_LIB):
+$(FT_TARGET):
 				make -C $(FT)
+
+$(GLEW_TARGET):
+				make -C $(GLEW)/auto
 
 dirs:			$(OBJ_DIR) $(MVM_OBJ_DIR) $(PFJ_OBJ_DIR) $(LOAD_OBJ_DIR) $(EVENTS_OBJ_DIR)
 
