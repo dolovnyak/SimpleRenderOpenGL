@@ -20,10 +20,9 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
 
 # add GLEW
-add_subdirectory(libs/libglew)
-include_directories(${GLEW_INCLUDE_DIRS})
+include_directories(libs/glew-2.1.0/include)
 add_definitions(-DGLEW_STATIC)
-target_link_libraries(${PROJECT_NAME} libglew_static)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/glew-2.1.0/lib/libGLEW.a)
 
 # add libft
 add_subdirectory(libs/libft)
