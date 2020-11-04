@@ -22,5 +22,6 @@ int	pfj_parse_main(t_raw_main *m, const char *path)
 	if (pfj_parse_scenes(m, tmp) < 0)
 		return (ft_log_error("PARSING SCENE", -1));
 	cJSON_Delete(root);
+	free(json);
 	return (1);
 }

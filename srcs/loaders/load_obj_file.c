@@ -3,7 +3,7 @@
 int		load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *normals)
 {
 	int			fd;
-	char		*line;
+	char		*line = NULL;
 	int			ret;
 	t_vector	tmp_vertices;
 	t_vector	tmp_uvs;
@@ -26,7 +26,10 @@ int		load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *norm
 	while ((ret = ft_single_file_read_line(fd, &line)) > 0)
 	{
 		if (ft_strlen(line) < 5)
+		{
+			free(line);
 			continue;
+		}
 		if (line[0] == 'v' && line[1] == ' ')
 		{
 			t_vec3 vertex;
@@ -114,11 +117,10 @@ int		load_obj_file(char *path, t_vector *vertices, t_vector *uvs, t_vector *norm
 					return (ft_log_error("FAILED PARSE OBJ FILE", -1));
 			}
 		}
-		ft_strdel(&line);
+		free(line);
 	}
 	if (ret < 0)
 		return (ft_log_error("FAILED READ OBJ FILE", -1));
-	ft_strdel(&line);
 	close(fd);
 	if (vertex_indices.size == 0 || tmp_vertices.size == 0)
 		return (ft_log_error("FAILED PARSE OBJ FILE", -1));

@@ -9,7 +9,7 @@ LOAD_OBJ_DIR	:=		./objs/loaders
 EVENTS_OBJ_DIR	:=		./objs/events_processing
 
 CC				:=		gcc
-CFLAGS			:=		-Wall -Wextra -Werror -O2
+FLAGS			:=		-O2 -Wall -Wextra -Werror
 
 SRC				:=		main.c \
 						init.c \

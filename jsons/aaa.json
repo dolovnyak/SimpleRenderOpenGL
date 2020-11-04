@@ -111,7 +111,7 @@
         {
           "vertex_shader_path": "./shaders/vertex.glsl",
           "fragment_shader_path": "./shaders/fragment.glsl",
-          "model_path": "./models/buildings/Residential Buildings 010.obj",
+          "model_path": "./models/Residential Buildings 010.obj",
           "material_path": "./resources/chaton.bmp",
           "position":
           {

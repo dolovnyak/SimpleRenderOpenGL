@@ -1,9 +1,21 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   matrix_vector_math.h                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sbecker <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/10/29 22:08:27 by sbecker           #+#    #+#             */
+/*   Updated: 2020/10/29 22:09:16 by sbecker          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "math.h"
-#include "libft.h"
-#include <GL/glew.h>
+#ifndef MATRIX_VECTOR_MATH_H
+# define MATRIX_VECTOR_MATH_H
+
+# include "math.h"
+# include "libft.h"
+# include <GL/glew.h>
 
 typedef struct	s_vec2
 {
@@ -50,7 +62,8 @@ t_mat4			mvm_translate(t_mat4 transform, t_vec3 vec);
 
 t_mat4			mvm_scale(t_mat4 transform, t_vec3 vec);
 
-t_mat4			mvm_perspective(float fov_y, float aspect, float near_z, float far_z);
+t_mat4			mvm_perspective(float fov_y, float aspect,
+		float near_z, float far_z);
 
 t_mat4			mvm_multiply_m4_m4(t_mat4 m1, t_mat4 m2);
 float			mvm_multiply_m1x4_v4(t_mat1x4 m, t_vec4 v);

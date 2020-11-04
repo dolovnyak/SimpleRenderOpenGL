@@ -6,7 +6,7 @@
 /*   By: sbecker <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 12:43:16 by sbecker           #+#    #+#             */
-/*   Updated: 2019/05/16 22:51:59 by sbecker          ###   ########.fr       */
+/*   Updated: 2020/10/29 22:20:52 by sbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
-
-//ft_ch
 int					ft_isalpha(int ch);
 int					ft_isdigit(int ch);
 int					ft_isalnum(int ch);
@@ -43,7 +41,6 @@ int					ft_isspace(int c);
 int					ft_toupper(int ch);
 int					ft_tolower(int ch);
 
-//ft_lst
 t_list				*ft_lstnew(void const *content, size_t content_size);
 void				ft_lstdelone(t_list **alst, void (*del)(void*, size_t));
 void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));
@@ -51,7 +48,6 @@ void				ft_lstadd(t_list **alst, t_list *new);
 void				ft_lstiter(t_list *lst, void (*f)(t_list*elem));
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 
-//ft_mem
 void				ft_bzero(void *s, size_t n);
 void				*ft_memset(void *b, int c, size_t len);
 void				ft_memdel(void **ap);
@@ -64,7 +60,6 @@ int					ft_memcmp(const void *s1, const void *s2, size_t n);
 char				**ft_dpclear(char **arr);
 void				ft_dpclearnum(char **arr, int size);
 
-//ft_num
 char				*ft_itoa(int n);
 int					ft_atoi(const char *str);
 int					ft_atoi_base(const char *str, int str_base);
@@ -72,10 +67,8 @@ char				*ft_ltoa_base(long nb, int base);
 char				*ft_utoa_base(unsigned long nb, int base);
 size_t				ft_numlen(int num);
 
-//ft_printf
 int					ft_printf(const char *str, ...);
 
-//ft_put
 void				ft_putchar(char c);
 void				ft_putstr(char const *s);
 void				ft_putendl(char const *s);
@@ -85,17 +78,16 @@ void				ft_putstr_fd(char const *s, int fd);
 void				ft_putendl_fd(char const *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
 
-//ft_read
 int					ft_multi_files_read_line(const int fd, char **line);
 int					ft_single_file_read_line(const int fd, char **line);
 int					ft_read_file(const char *filename, char **out_data);
 
-//ft_str
 char				*ft_strcpy(char *dst, const char *src);
 char				*ft_strncpy(char *dst, const char *src, unsigned long n);
 char				*ft_strcat(char *s1, const char *s2);
 char				*ft_strncat(char *s1, const char *s2, unsigned long n);
-char				*ft_strnstr(const char *haystack, const char *needle, size_t len);
+char				*ft_strnstr(const char *haystack, const char *needle,
+		size_t len);
 char				*ft_strnew(size_t size);
 void				ft_strdel(char **as);
 void				ft_strclr(char *s);
@@ -130,20 +122,15 @@ size_t				ft_strchrpos(char *s, int c);
 char				*ft_strsubfree(char *s, int start, int len);
 char				*ft_strnewsetchar(size_t size, char c);
 
-//ft_swap
 void				ft_swap(int *a, int *b);
 void				ft_dswap(double *a, double *b);
 void				ft_fswap(float *a, float *b);
 
-//ft_system
-//void				ft_exit_with_error(const char *error_str, int error_code);
 void				ft_exit_with_error(const char **error_strs, int error_code);
 int					ft_log_error(const char *error, int id);
 
-//ft_vector
 t_vector			ft_vector_create(size_t	elem_size);
 void				ft_vector_free(t_vector *vector);
 int					ft_vector_push_back(t_vector *vector, void *elem_data);
-
 
 #endif
