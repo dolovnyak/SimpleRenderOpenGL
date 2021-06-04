@@ -13,8 +13,8 @@ set_target_properties(${PROJECT_NAME}
 set(SDL2_PATH libs/SDL2 CACHE BOOL "" FORCE)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/sdl2-cmake-modules)
 find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL2/SDL2.framework/Headers)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL2/SDL2.framework)
 
 # add OpenGL
 find_package(OpenGL REQUIRED)
