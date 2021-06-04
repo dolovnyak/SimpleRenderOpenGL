@@ -4,5 +4,7 @@ cmake-build-debug
 objs/
 *.a
 libs/libft/obj/
+libs/glew-glew-2.1.0/
 
 glsr
+build

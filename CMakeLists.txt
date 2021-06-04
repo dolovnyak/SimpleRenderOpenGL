@@ -10,6 +10,8 @@ set_target_properties(${PROJECT_NAME}
         )
 
 # add SDL2
+set(SDL2_PATH libs/SDL2 CACHE BOOL "" FORCE)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/sdl2-cmake-modules)
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
@@ -20,9 +22,28 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
 
 # add GLEW
-include_directories(libs/glew-2.1.0/include)
+set(GLEW_LIB glew-glew-2.1.0)
+if (INSTALL_DEPS)
+    execute_process(
+            COMMAND curl -O https://codeload.github.com/nigels-com/glew/tar.gz/glew-2.1.0
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/libs)
+    execute_process(
+            COMMAND tar -xzvf glew-2.1.0
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/libs)
+    execute_process(
+            COMMAND rm glew-2.1.0
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/libs)
+    execute_process(
+            COMMAND make -C auto
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/libs/${GLEW_LIB})
+    execute_process(
+            COMMAND make -j4 glew.lib.static
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/libs/${GLEW_LIB})
+endif()
 add_definitions(-DGLEW_STATIC)
-target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/glew-2.1.0/lib/libGLEW.a)
+target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs/${GLEW_LIB}/include)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/${GLEW_LIB}/lib/libGLEW.a)
 
 # add libft
 add_subdirectory(libs/libft)
