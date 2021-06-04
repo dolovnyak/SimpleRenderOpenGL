@@ -14,6 +14,18 @@ Implemented:
 - ### setting with json.
 - ### work with a full OpenGL pipeline.
 
+Controls:
+----------
+- `up arrow`/`down arrow` - move current object to the up/down
+- `left arrow`/`right arrow` - move current object to the left/right
+- `option` + `left arrow`/`right arrow` - rotate current object around the y axis.
+- `option` + `up arrow`/`down arrow` arrow - rotate current object around the x axis.
+- `1`/`2`/`3` - OpenGL draw mods: triangles/lines/points.
+- `c` - switch to color mode.
+- `t` - draw smoothly or with triangles in color mode.
+- `>` - switch to next object.
+- `<` - switch to previous object.
+
 Build and run on `MacOS`:
 ---------
 ```
