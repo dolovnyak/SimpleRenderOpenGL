@@ -79,7 +79,7 @@
           "material_path": "./resources/grey_diffuse.bmp",
           "position":
           {
-            "x": 10.0,
+            "x": -2.0,
             "y": -4.0,
             "z": -10.0
           }
@@ -101,18 +101,6 @@
           "fragment_shader_path": "./shaders/fragment.glsl",
           "model_path": "./models/moss rock 02 high.obj",
           "material_path": "./resources/moss_rock_02_Color_4k.bmp",
-          "position":
-          {
-            "x": -10.0,
-            "y": -4.0,
-            "z": -10.0
-          }
-        },
-        {
-          "vertex_shader_path": "./shaders/vertex.glsl",
-          "fragment_shader_path": "./shaders/fragment.glsl",
-          "model_path": "./models/Residential Buildings 010.obj",
-          "material_path": "./resources/chaton.bmp",
           "position":
           {
             "x": -10.0,

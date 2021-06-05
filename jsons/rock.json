@@ -1,0 +1,31 @@
+{
+  "window":
+  {
+    "title": "OpenGL simple render",
+    "size":
+    {
+      "x": 1920,
+      "y": 1080
+    }
+  },
+  "scenes":
+  [
+    {
+      "objects":
+      [
+        {
+          "vertex_shader_path": "./shaders/vertex.glsl",
+          "fragment_shader_path": "./shaders/fragment.glsl",
+          "model_path": "./models/moss rock 02 high.obj",
+          "material_path": "./resources/moss_rock_02_Color_4k.bmp",
+          "position":
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      ]
+    }
+  ]
+}
