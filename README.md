@@ -18,6 +18,7 @@ Controls:
 ----------
 - `up arrow`/`down arrow` - move current object to the up/down
 - `left arrow`/`right arrow` - move current object to the left/right
+- `shift` + `up arrow`/`down arrow` arrow - move current object to the forward/backward.
 - `option` + `left arrow`/`right arrow` - rotate current object around the y axis.
 - `option` + `up arrow`/`down arrow` arrow - rotate current object around the x axis.
 - `1`/`2`/`3` - OpenGL draw mods: triangles/lines/points.
@@ -34,3 +35,11 @@ make -C build
 
 ./glsr jsons/'name.json'
 ```
+
+Screenshots:
+----------
+![](https://github.com/dolovnyak/SimpleRenderOpenGL/blob/master/screenshots/mult_objs.gif)
+![](https://github.com/dolovnyak/SimpleRenderOpenGL/blob/master/screenshots/awp1.png)
+![](https://github.com/dolovnyak/SimpleRenderOpenGL/blob/master/screenshots/awp2.png)
+![](https://github.com/dolovnyak/SimpleRenderOpenGL/blob/master/screenshots/awp3.png)
+![](https://github.com/dolovnyak/SimpleRenderOpenGL/blob/master/screenshots/rock1.gif)
