@@ -7,12 +7,13 @@ This is the OpenGL render with a minimum of functionality.
 
 Implemented:
 ---------
-- ### self-written .bmp reader.
-- ### self-written .obj reader.
-- ### self-written matrix mathematics including projection matrix.
-- ### textures.
-- ### setting with json.
-- ### work with a full OpenGL pipeline.
+- self-written .bmp reader.
+- self-written .obj reader.
+- self-written matrix mathematics including projection matrix.
+- textures.
+- setting with json.
+- multi objects.
+- work with a full OpenGL pipeline.
 
 Controls:
 ----------
